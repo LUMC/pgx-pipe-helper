@@ -1,6 +1,7 @@
 import os
 import yaml
 import datetime
+import locus_processing
 
 # yaml representer for dumping config
 from yaml.representer import Representer
@@ -10,6 +11,7 @@ class PipeHelper(object):
     def __init__(self, config, workflow_name=""):
         self._config = config
         self._workflow_name = workflow_name
+        self._locus = None
         
         self._barcode_ids = yaml.load(config.get("BARCODE_IDS", "[]"))
         
@@ -45,6 +47,13 @@ class PipeHelper(object):
 
     def barcode_index(self, barcode_id):
         return self._all_barcodes.index(barcode_id)
+    
+    @property
+    def locus(self):
+        gene_file = self._config.get("GENE", None)
+        if self._locus is None and gene_file is not None:
+            self._locus = locus_processing.load_locus_yaml(gene_file)
+        return self._locus
 
     @property
     def outputs(self):

@@ -1,0 +1,1 @@
+git+ssh://git@git.lumc.nl/PharmacogenomicsPipe/locus_processing.git@master#egg=locus_processing
