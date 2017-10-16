@@ -73,7 +73,6 @@ class PipeHelper(object):
     def genes(self):
         return self._genes
 
-    @property
     def locus_file(self, gene_name):
         try:
             return self._genes[gene_name]
