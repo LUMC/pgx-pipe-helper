@@ -2,6 +2,7 @@ import os
 import yaml
 import datetime
 import locus_processing
+from snakemake import WorkflowError
 
 # yaml representer for dumping config
 from yaml.representer import Representer
@@ -19,7 +20,8 @@ class PipeHelper(object):
             with open(config["BARCODES"], "r") as bc_file:
                 self._all_barcodes = [line.strip()[1:] for line in bc_file if line.startswith(">")]
         except KeyError:
-            raise WorkflowError("Barcode file not specified")
+            self._all_barcodes = []
+            #raise WorkflowError("Barcode file not specified")
         except IOError:
             raise WorkflowError("Could not load barcodes")
         
@@ -27,7 +29,10 @@ class PipeHelper(object):
             assert all((x in self._all_barcodes for x in self._barcode_ids)), "barcode id not in barcode file"
         
         if len(self._barcode_ids) == 0:
-            self._barcode_ids = self._all_barcodes
+            if len(self._all_barcodes) > 0:
+                self._barcode_ids = self._all_barcodes
+            else:
+                raise WorkflowError("No valid barcodes provided")
 
     # handlers for workflow exit status
     def onsuccess(self):
@@ -49,11 +54,8 @@ class PipeHelper(object):
         return self._all_barcodes.index(barcode_id)
     
     @property
-    def locus(self):
-        gene_file = self._config.get("GENE", None)
-        if self._locus is None and gene_file is not None:
-            self._locus = locus_processing.load_locus_yaml(gene_file)
-        return self._locus
+    def loci(self):
+        return self._config.get("LOCI", [])
 
     @property
     def outputs(self):
