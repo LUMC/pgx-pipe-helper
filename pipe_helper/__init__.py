@@ -34,9 +34,16 @@ class PipeHelper(object):
             else:
                 raise WorkflowError("No valid barcodes provided")
 
-        for locus in config.get("LOCI", []):
-            if not os.path.isfile(locus):
-                raise WorkflowError("Locus definition file {} does not exist".format(locus))
+        self._genes = {}
+        for locus_file in config.get("LOCI", []):
+            try:
+                locus = locus_processing.load_locus_yaml(locus_file)
+            except IOError:
+                raise WorkflowError("Locus definition file {} does not exist".format(locus_file))
+            except ValueError:
+                raise WorkflowError("{} is not a valid locus definition".format(locus_file))
+
+            self._genes[locus.name] = locus_file
 
 
     # handlers for workflow exit status
@@ -61,6 +68,17 @@ class PipeHelper(object):
     @property
     def loci(self):
         return self._config.get("LOCI", [])
+
+    @property
+    def genes(self):
+        return self._genes
+
+    @property
+    def locus_file(self, gene_name):
+        try:
+            return self._genes[gene_name]
+        except KeyError:
+            raise WorkflowError("No locus file found for gene {}".format(gene_name))
 
     @property
     def outputs(self):
