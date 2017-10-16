@@ -34,6 +34,11 @@ class PipeHelper(object):
             else:
                 raise WorkflowError("No valid barcodes provided")
 
+        for locus in config.get("LOCI", []):
+            if not os.path.isfile(locus):
+                raise WorkflowError("Locus definition file {} does not exist".format(locus))
+
+
     # handlers for workflow exit status
     def onsuccess(self):
         print("{} workflow completed successfully".format(self._workflow_name))
