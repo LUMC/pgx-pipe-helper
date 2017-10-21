@@ -9,7 +9,7 @@ from yaml.representer import Representer
 import collections
 
 class PipeHelper(object):
-    def __init__(self, config, workflow_name=""):
+    def __init__(self, config, workflow_name="", validate_barcodes=True):
         self._config = config
         self._workflow_name = workflow_name
         self._locus = None
@@ -25,14 +25,15 @@ class PipeHelper(object):
         except IOError:
             raise WorkflowError("Could not load barcodes")
         
-        if len(self._barcode_ids) and len(self._all_barcodes):
-            assert all((x in self._all_barcodes for x in self._barcode_ids)), "barcode id not in barcode file"
+        if validate_barcodes:
+            if len(self._barcode_ids) and len(self._all_barcodes):
+                assert all((x in self._all_barcodes for x in self._barcode_ids)), "barcode id not in barcode file"
         
-        if len(self._barcode_ids) == 0:
-            if len(self._all_barcodes) > 0:
-                self._barcode_ids = self._all_barcodes
-            else:
-                raise WorkflowError("No valid barcodes provided")
+            if len(self._barcode_ids) == 0:
+                if len(self._all_barcodes) > 0:
+                    self._barcode_ids = self._all_barcodes
+                else:
+                    raise WorkflowError("No valid barcodes provided")
 
         self._genes = {}
         for locus_file in config.get("LOCI", []):
