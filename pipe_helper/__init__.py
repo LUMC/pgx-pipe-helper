@@ -2,7 +2,7 @@ import os
 import yaml
 import datetime
 import locus_processing
-from snakemake import WorkflowError
+from snakemake import WorkflowError, shell
 
 # yaml representer for dumping config
 from yaml.representer import Representer
@@ -55,9 +55,10 @@ class PipeHelper(object):
         with open(config_file, "w") as outfile:
             print(yaml.dump(self._config, default_flow_style=False), file=outfile)
     
-    def onerror(self):
+    def onerror(self, log=None):
         print("Error encountered while executing workflow")
-        shell("cat {log}")
+        if log is not None:
+            shell("cat {log}")
   
     @property
     def barcode_ids(self):
