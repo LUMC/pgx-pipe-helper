@@ -14,7 +14,11 @@ class PipeHelper(object):
         self._workflow_name = workflow_name
         self._locus = None
         
-        self._barcode_ids = yaml.load(config.get("BARCODE_IDS", "[]"))
+        bc_ids = config.get("BARCODE_IDS", "[]")
+        if isinstance(bc_ids, str):
+            self._barcode_ids = yaml.load(bc_ids)
+        else:
+            self._barcode_ids = bc_ids
         
         try:
             with open(config["BARCODES"], "r") as bc_file:
