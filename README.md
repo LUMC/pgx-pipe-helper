@@ -4,5 +4,5 @@ A helper module for wrapping functionality which is common to all pipeline stage
 
 ## Installation
 ```
-pip install git+git@git.lumnc.nl:PharmacogenomicsPipe/pipe_helper.git
-
+pip install git+https://github.com/lumc-pgx/pipe-helper.git
+```
