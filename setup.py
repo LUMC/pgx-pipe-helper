@@ -3,7 +3,7 @@ setup(
     name="pipe_helper",
     version="0.0.1",
     description="Simple helper for common functionality",
-    autor="Guy Allard, LUMC",
+    author="Guy Allard, LUMC",
     author_email="guyallard01 AT gmail DOT com",
     url="https://github.com/lumc-pgx/pipe-helper",
     license="MIT",
